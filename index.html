@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <script src="jquery-3.2.0.js"></script>
+    <script src="prefixfree.min.js"></script>
+    <style>
+        /*---------------样式重置-------------*/
+        body,ul,li,p,h1,h2,h3,h4,h5,h6,img,br,hr,table,tr,td,dl,dt,dd,form {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-size: 16px;
+            color: #434343;
+            font-family: 微软雅黑;
+        }
+        .clear {
+            clear: both;
+            font-size: 0;
+        }
+        ul,ol {
+            list-style: none;
+        }
+        img {
+            border: none;
+        }
+        /*----------容器样式-------------*/
+        .carousel{
+            width: 800px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            display: table;
+            margin: 0 auto;
+        }
+        /*------------左右控制条样式-----------*/
+        .control-left,.control-right{
+            width: 40px;
+            position: absolute;
+            top:40%;
+            cursor: pointer;
+            z-index: 1;
+        }
+        .control-left{
+            left:30px;
+        }
+        .control-right{
+            right: 30px;
+        }
+        /*---------------底部控制条样式----------------*/
+        .control-bottom{
+            position: absolute;
+            bottom: 0;
+            height: 80px;
+            width: 100%;
+            background-color: rgba(000,000,000,.5);
+            z-index: 1;
+        }
+        .control-bottom:after{
+            content: " ";
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
+        .bottom-li{
+            display: inline-block;
+            vertical-align: middle;
+            height: 30px;
+            width: 30px;
+            background-color: aqua;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background-Color 1s;
+            margin: 0px 20px;
+        }
+        .bottom-li.active{
+            background-color: red;
+        }
+        /*----------------滑动内容样式------------------*/
+        .carousel-content{
+            width: 800px;
+            height: 400px;
+            font-size: 0;
+            position: relative;
+        }
+        .content-item{
+            position: absolute;
+            width: 800px;
+            height: 400px;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        .content-item.active{
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel">
+        <img src="http://iph.href.lu/200x300?fg=000&bg=ccc&text=left" class="control-left">
+        <img src="http://iph.href.lu/200x300?fg=000&bg=ccc&text=right" class="control-right">
+        <div class="control-bottom">
+        </div>
+        <div class="carousel-content">
+            <img src="http://iph.href.lu/800x400?fg=000&bg=e4393c&text=第一张" class="content-item active">
+            <img src="http://iph.href.lu/800x400?fg=000&bg=e4393c&text=第二张" class="content-item">
+            <img src="http://iph.href.lu/800x400?fg=000&bg=e4393c&text=第三张" class="content-item">
+            <img src="http://iph.href.lu/800x400?fg=000&bg=e4393c&text=第四张" class="content-item">
+        </div>
+    </div>
+<script>
+    var curIndex=0;
+    var sumIndex=$(".content-item").length;
+    function changeImg() {
+        $(".content-item").removeClass("active");
+        $(".content-item")[curIndex].className+=" active";
+        changeIndex();
+    }
+    $(".control-left").on("click",function () {
+        curIndex==0?(curIndex=sumIndex-1)&&changeImg():curIndex--&&changeImg();
+    })
+    $(".control-right").on("click",function () {
+        curIndex==sumIndex-1?!(curIndex=0)&&changeImg():++curIndex&&changeImg();
+    })
+    function createIndex() {
+        for (var i=0;i<sumIndex;i++){
+           var li= $("<div class='bottom-li'></div>")
+            if (i ==0) li.addClass("active");
+            $(".control-bottom").append(li);
+        }
+    }
+    createIndex();
+    function changeIndex() {
+        $(".bottom-li").removeClass("active");
+        $($(".bottom-li")[curIndex]).addClass("active");
+    }
+    $(".bottom-li").on("mouseover",function (event) {
+        for (var i=0;i<sumIndex;i++){
+            if (event.target==$(".bottom-li")[i]){
+                curIndex=i;
+                break
+            }
+        }
+        changeImg();
+    })
+    setInterval(function () {
+        curIndex==sumIndex-1?!(curIndex=0)&&changeImg():++curIndex&&changeImg();
+    },3000)
+</script>
+</body>
+</html>
